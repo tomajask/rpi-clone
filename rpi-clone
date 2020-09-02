@@ -1095,7 +1095,7 @@ fi
 
 dst_disk_size=$(echo "$dst_partition_table" \
 				| grep "^/dev/$dst_disk" | cut -d ":" -f 2 | tr -d 's')
-dst_root_dev=/dev/${dst_part_base}${root_part_num}
+dst_root_dev=/dev/${dst_part_base}p${root_part_num}
 
 dst_mount_table=$(findmnt -o source,target -n -l \
 				| grep "^/dev/$dst_disk" | tr -s " ")
