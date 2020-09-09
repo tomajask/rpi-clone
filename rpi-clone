@@ -224,7 +224,7 @@ qecho()
     	echo "$@"
     fi
 	}
-	
+
 qprintf()
 	{
     if ((!quiet))
@@ -383,9 +383,9 @@ print_sync_actions()
 		if ((p == root_part_num && alt_root_part_num > 0))
 		then
 			part=${src_root_dev#/dev/}
-			flow="$part to $dst_part_base$p"
+			flow="$part to ${dst_part_base}p${p}"
 		else
-			flow="to $dst_part_base$p"
+			flow="to ${dst_part_base}p${p}"
 		fi
 		if ((src_sync_part[p]))
 		then
@@ -420,9 +420,9 @@ print_image_actions()
 		if ((p == root_part_num && alt_root_part_num > 0))
 		then
 			part=${src_root_dev#/dev/}
-			flow="$part to $dst_part_base$p"
+			flow="$part to ${dst_part_base}p${p}"
 		else
-			flow="to $dst_part_base$p"
+			flow="to ${dst_part_base}p${p}"
 		fi
 
 		action=""
@@ -690,7 +690,7 @@ do
 		src_partition[p]=${src_root_dev#/dev/}
 		src_device[p]=$src_root_dev
 	else
-		src_partition[p]="${src_part_base}${p}"
+		src_partition[p]="${src_part_base}p${p}"
 		src_device[p]="/dev/${src_partition[p]}"
 	fi
 
@@ -1095,7 +1095,7 @@ fi
 
 dst_disk_size=$(echo "$dst_partition_table" \
 				| grep "^/dev/$dst_disk" | cut -d ":" -f 2 | tr -d 's')
-dst_root_dev=/dev/${dst_part_base}${root_part_num}
+dst_root_dev=/dev/${dst_part_base}p${root_part_num}
 
 dst_mount_table=$(findmnt -o source,target -n -l \
 				| grep "^/dev/$dst_disk" | tr -s " ")
@@ -1120,7 +1120,7 @@ do
 	fi
 	dst_exists[p]=1
 
-	part="${dst_part_base}${p}"
+	part="${dst_part_base}p${p}"
 	dst_partition[p]="$part"
 	dst_device[p]="/dev/$part"
 
@@ -1338,7 +1338,7 @@ Use -U for unattended even if initializing.
 
 	readable_MiB $((last_part_sectors + 7812)) "512" image_space_readable
 
-	echo "== Initialize: IMAGE partition table - $reason ==" 
+	echo "== Initialize: IMAGE partition table - $reason =="
 	print_image_actions
 	print_options
 
@@ -1485,7 +1485,7 @@ Use -U for unattended even if initializing.
 		then
 			continue
 		fi
-		dst_dev=/dev/${dst_part_base}${p}
+		dst_dev=/dev/${dst_part_base}p${p}
 		fs_type=${src_fs_type[$p]}
 		if    ((p == ext_part_num)) \
 		   || [ "$fs_type" == "--" ]
@@ -1530,7 +1530,7 @@ Use -U for unattended even if initializing.
 						else
 							src_sync_part[p]=1
 						fi
-					fi					
+					fi
 				else
 					printf "  => dd if=${src_device[$p]} of=$dst_dev bs=1M ..."
 					dd if=${src_device[$p]} of=$dst_dev bs=1M &>> /tmp/$PGM-output
@@ -1665,7 +1665,7 @@ do
 			qprintf "Syncing unmounted partitions:\n"
 		fi
 		sync_msg_done=1
-		dst_dev=/dev/${dst_part_base}${p}
+		dst_dev=/dev/${dst_part_base}p${p}
 		fs_type=${src_fs_type[$p]}
 		ext_label $p $fs_type "" label
 		if [ "$label" != "" ]
@@ -1711,7 +1711,7 @@ do
 			mkdir -p $dst_dir
 		fi
 
-		dst_dev=/dev/${dst_part_base}${p}
+		dst_dev=/dev/${dst_part_base}p${p}
 		fs_type=${src_fs_type[$p]}
 		ext_label $p $fs_type "" label
 		if [ "$label" != "" ]
@@ -1814,7 +1814,7 @@ qprintf "   Start - %s    End - %s    Elapsed Time - %d:%02d\n" \
 if ((!unattended))
 then
 	echo -n $"
-Cloned partitions are mounted on $clone for inspection or customizing. 
+Cloned partitions are mounted on $clone for inspection or customizing.
 
 Hit Enter when ready to unmount the /dev/$dst_disk partitions ..."
 
